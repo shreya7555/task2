@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #52bb2b;
+    }
+
+    .stopwatch-container {
+      text-align: center;
+      background-color: #b96122;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .stopwatch {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 1em;
+      background-color: #0de30d;
+      color: #774cc2;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f9f9fb;
+    }
+
+    #lapContainer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 10px; /* Added padding for better spacing */
+    }
+
+    .lapTime {
+      font-size: 1.2em;
+      margin: 5px;
+    }
+  </style>
+  <title>Stopwatch</title>
+</head>
+<body>
+
+<div class="stopwatch-container">
+  <div id="display">00:00:00</div>
+  <button onclick="startStop()">Start/Stop</button>
+  <button onclick="lap()">Lap</button>
+  <button onclick="reset()">Reset</button>
+</div>
+
+<div id="lapContainer"></div>
+
+<script>
+  let timer;
+  let isRunning = false;
+  let seconds = 0;
+  let minutes = 0;
+  let hours = 0;
+  let lapCounter = 1;
+
+  function startStop() {
+    if (isRunning) {
+      clearInterval(timer);
+    } else {
+      timer = setInterval(updateTime, 1000);
+    }
+    isRunning = !isRunning;
+  }
+
+  function lap() {
+    const lapContainer = document.getElementById('lapContainer');
+    const lapTime = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+    const lapElement = document.createElement('div');
+    lapElement.className = 'lapTime';
+    lapElement.textContent = `Lap ${lapCounter++}: ${lapTime}`;
+    lapContainer.appendChild(lapElement);
+  }
+
+  function reset() {
+    clearInterval(timer);
+    isRunning = false;
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+    lapCounter = 1;
+    updateDisplay();
+    clearLaps();
+  }
+
+  function updateTime() {
+    seconds++;
+    if (seconds === 60) {
+      seconds = 0;
+      minutes++;
+      if (minutes === 60) {
+        minutes = 0;
+        hours++;
+      }
+    }
+    updateDisplay();
+  }
+
+  function updateDisplay() {
+    const display = document.getElementById('display');
+    display.textContent = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+  }
+
+  function formatTime(value) {
+    return value < 10 ? `0${value}` : value;
+  }
+
+  function clearLaps() {
+    const lapContainer = document.getElementById('lapContainer');
+    lapContainer.innerHTML = '';
+  }
+</script>
+
+</body>
+</html>
